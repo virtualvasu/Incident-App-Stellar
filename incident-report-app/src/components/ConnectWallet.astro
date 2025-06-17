@@ -1,0 +1,74 @@
+<div id="connect-wrap" class="wrap" aria-live="polite">
+    &nbsp;
+    <div class="ellipsis"></div>
+    <button style="display:none" data-connect aria-controls="connect-wrap">
+      Connect
+    </button>
+    <button style="display:none" data-disconnect aria-controls="connect-wrap">
+      Disconnect
+    </button>
+  </div>
+  
+  <style>
+    .wrap {
+      text-align: center;
+      display: flex;
+      width: 18em;
+      margin: auto;
+      justify-content: center;
+      line-height: 2.7rem;
+      gap: 0.5rem;
+    }
+  
+    .ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      white-space: nowrap;
+    }
+  </style>
+  
+  <script>
+    import { getPublicKey, connect, disconnect } from "../stellar-wallets-kit";
+  
+    const ellipsis = document.querySelector(
+      "#connect-wrap .ellipsis",
+    ) as HTMLElement;
+    const connectButton = document.querySelector("[data-connect]") as HTMLButtonElement;
+    const disconnectButton = document.querySelector(
+      "[data-disconnect]",
+    ) as HTMLButtonElement;
+  
+    async function showDisconnected() {
+      ellipsis.innerHTML = "";
+      ellipsis.removeAttribute("title");
+      connectButton.style.removeProperty("display");
+      disconnectButton.style.display = "none";
+    }
+  
+    async function showConnected() {
+      const publicKey = await getPublicKey();
+      if (publicKey) {
+        ellipsis.innerHTML = `Signed in as ${publicKey}`;
+        ellipsis.title = publicKey ?? "";
+        connectButton.style.display = "none";
+        disconnectButton.style.removeProperty("display");
+      } else {
+        showDisconnected();
+      }
+    }
+  
+    connectButton.addEventListener("click", async () => {
+      await connect(showConnected);
+    });
+  
+    disconnectButton.addEventListener("click", async () => {
+      disconnect(showDisconnected);
+    });
+  
+    if (await getPublicKey()) {
+      showConnected();
+    } else {
+      showDisconnected();
+    }
+  </script>
