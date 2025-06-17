@@ -1,0 +1,144 @@
+---
+// IncidentReport.astro
+---
+
+<div>
+    <h2>Incident Report System</h2>
+    
+    <div>
+      <h3>Report New Incident</h3>
+      <textarea id="incident-report" placeholder="Describe the incident..." rows="4" cols="50"></textarea>
+      <br>
+      <button id="report-btn">Report Incident</button>
+    </div>
+  
+    <div>
+      <h3>View Incidents</h3>
+      <p>Total incidents: <span id="total-count">???</span></p>
+      <button id="refresh-btn">Refresh Count</button>
+      <br><br>
+      
+      <input type="number" id="incident-id" placeholder="Enter incident ID" min="1">
+      <button id="get-incident-btn">Get Incident</button>
+      
+      <div id="incident-details"></div>
+    </div>
+  </div>
+  
+  <script>
+    import { getPublicKey, signTransaction } from "../stellar-wallets-kit";
+    import incidentContract from "../contracts/incident-report";
+  
+    const reportBtn = document.getElementById("report-btn");
+    const refreshBtn = document.getElementById("refresh-btn");
+    const getIncidentBtn = document.getElementById("get-incident-btn");
+    const reportTextarea = document.getElementById("incident-report");
+    const totalCount = document.getElementById("total-count");
+    const incidentIdInput = document.getElementById("incident-id");
+    const incidentDetails = document.getElementById("incident-details");
+  
+    async function setupContract() {
+      const publicKey = await getPublicKey();
+      if (!publicKey) {
+        alert("Please connect your wallet first");
+        return false;
+      }
+      incidentContract.options.publicKey = publicKey;
+      incidentContract.options.signTransaction = signTransaction;
+      return true;
+    }
+  
+    reportBtn.addEventListener("click", async () => {
+      if (!(await setupContract())) return;
+      
+      const report = reportTextarea.value.trim();
+      if (!report) {
+        alert("Please enter an incident report");
+        return;
+      }
+  
+      reportBtn.disabled = true;
+      reportBtn.textContent = "Reporting...";
+  
+      try {
+        const tx = await incidentContract.report_incident({
+          report: report
+        });
+        const { result } = await tx.signAndSend();
+        
+        alert(`Incident reported successfully! ID: ${result.id}`);
+        reportTextarea.value = "";
+        
+        // Refresh the total count
+        await refreshTotalCount();
+        
+      } catch (e) {
+        console.error("Error reporting incident:", e);
+        alert("Failed to report incident");
+      } finally {
+        reportBtn.disabled = false;
+        reportBtn.textContent = "Report Incident";
+      }
+    });
+  
+    refreshBtn.addEventListener("click", refreshTotalCount);
+  
+    async function refreshTotalCount() {
+      if (!(await setupContract())) return;
+  
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = "Loading...";
+  
+      try {
+        const result = await incidentContract.get_total_incidents();
+        totalCount.textContent = result.toString();
+      } catch (e) {
+        console.error("Error getting total count:", e);
+        totalCount.textContent = "Error";
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = "Refresh Count";
+      }
+    }
+  
+    getIncidentBtn.addEventListener("click", async () => {
+      if (!(await setupContract())) return;
+      
+      const id = parseInt(incidentIdInput.value);
+      if (!id || id < 1) {
+        alert("Please enter a valid incident ID");
+        return;
+      }
+  
+      getIncidentBtn.disabled = true;
+      getIncidentBtn.textContent = "Loading...";
+  
+      try {
+        const result = await incidentContract.get_incident({
+          incident_id: id
+        });
+        
+        if (result) {
+          incidentDetails.innerHTML = `
+            <h4>Incident #${result.id}</h4>
+            <p><strong>Report:</strong> ${result.report}</p>
+            <p><strong>Timestamp:</strong> ${new Date(result.timestamp * 1000).toLocaleString()}</p>
+            <p><strong>Reporter:</strong> ${result.reporter}</p>
+          `;
+        } else {
+          incidentDetails.innerHTML = `<p>No incident found with ID ${id}</p>`;
+        }
+      } catch (e) {
+        console.error("Error getting incident:", e);
+        incidentDetails.innerHTML = `<p>Error loading incident</p>`;
+      } finally {
+        getIncidentBtn.disabled = false;
+        getIncidentBtn.textContent = "Get Incident";
+      }
+    });
+  
+    // Load total count on page load
+    window.addEventListener("load", () => {
+      refreshTotalCount();
+    });
+  </script>
