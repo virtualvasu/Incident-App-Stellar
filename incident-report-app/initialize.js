@@ -18,7 +18,7 @@ console.log('###################### Initializing ########################');
 // Get dirname (equivalent to the Bash version)
 const __filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(__filename);
-const contractsDir = `${dirname}/.stellar/contract-ids`;
+const contractsDir = `.stellar/contract-ids`;
 
 // variable for later setting pinned version of soroban in "$(dirname/target/bin/soroban)"
 const cli = 'stellar';
