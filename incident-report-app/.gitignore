@@ -29,7 +29,7 @@ packages/*
 # if you have other workspace packages, add them here
 !packages/.gitkeep
 
-# generated contract client imports
-src/contracts/*
-!src/contracts/util.ts
+# # generated contract client imports
+# src/contracts/*
+# !src/contracts/util.ts
 
