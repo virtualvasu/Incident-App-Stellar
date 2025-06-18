@@ -90,10 +90,13 @@ This project is a decentralized web application for reporting road incidents usi
 ## Usage Guidelines
 
 1. **Install Freighter Wallet** in your browser.
-2. **Fund your wallet** with test tokens via the Friendbot:
+2. **Fund your wallet** with test tokens via the 
+Friendbot:
    [Friendbot link](https://lab.stellar.org/account/fund?$=network$id=testnet&label=Testnet&horizonUrl=https:////horizon-testnet.stellar.org&rpcUrl=https:////soroban-testnet.stellar.org&passphrase=Test%20SDF%20Network%20/;%20September%202015;;)
 3. **Connect your wallet** in the web app.
 4. **Sign transactions** through Freighter to report incidents.
+
+5. **Web app demo:** https://drive.google.com/drive/folders/1LHl2fMOLZe-ikh-zSZpR3aesWE58GhxY?usp=sharing
 
 ---
 
