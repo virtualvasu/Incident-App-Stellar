@@ -20,17 +20,21 @@ fn test_report_and_get_incident() {
     assert_eq!(incident1.id, 1);
     assert_eq!(incident2.id, 2);
     
-    // Test getting incidents by ID
+    // Test getting incidents by ID - now returns Incident directly, not Option
     let retrieved1 = client.get_incident(&1);
     let retrieved2 = client.get_incident(&2);
     
-    assert!(retrieved1.is_some());
-    assert!(retrieved2.is_some());
+    // Check that valid incidents are retrieved correctly
+    assert_eq!(retrieved1.id, 1);
+    assert_eq!(retrieved1.report, String::from_str(&env, "Server down"));
+    assert_eq!(retrieved2.id, 2);
+    assert_eq!(retrieved2.report, String::from_str(&env, "Database error"));
     
     // Test total incidents count
     assert_eq!(client.get_total_incidents(), 2);
     
-    // Test non-existent incident
+    // Test non-existent incident - now returns default incident with id = 0
     let non_existent = client.get_incident(&999);
-    assert!(non_existent.is_none());
+    assert_eq!(non_existent.id, 0); // id = 0 indicates "not found"
+    assert_eq!(non_existent.report, String::from_str(&env, "")); // empty report for not found
 }
