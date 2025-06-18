@@ -6,7 +6,7 @@
     "init": "node initialize.js",
     "dev": "npm run init && astro dev",
     "start": "npm run init && astro dev",
-    "build": "npm run init && astro check && astro build ",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
