@@ -8,7 +8,7 @@ This project is a decentralized web application for reporting road incidents usi
 
 * **Deployed Contract ID:** `CALH5YR6MDFTC5Z5NILDXKNXPEF3FX2Y33ULI4ELPMMHO2SSJMYYUKWE`
 
-* **Check on block explorer:** https://stellar.expert/explorer/testnet/contract/CALH5YR6MDFTC5Z5NILDXKNXPEF3FX2Y33ULI4ELPMMHO2SSJMYYUKWE
+* **Check on block explorer:** https://stellar.expert/explorer/testnet/contract/CBMQNDG7NJESJLWNGOIFWKLQWBQK3JUVNKE26JI6I3IOXCSVZ7L7TFRI
 * **Alias:** `incident-report`
 
 ---
